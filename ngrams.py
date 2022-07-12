@@ -4,6 +4,7 @@ import numpy as np
 
 
 def ngrams(sent, n=2, pad_left=False, pad_right=False):
+    """Makes ngrams from a sentence sent. If pad_left and pad_right pads sentences with None according to n."""
     sent = [None]*(n-1)*pad_left + sent + [None]*(n-1)*pad_right
     return (tuple(sent[i:i+n]) for i in range(len(sent) - n + 1))
 
@@ -34,7 +35,6 @@ def ngram_gen_sent(model, n=2):
         key = tuple(sent[-(n-1):])
         wrds = list(model[key].keys())
         prob = list(model[key].values())
-        #print(model)
         sent.append(np.random.choice(wrds, p=prob))
         sent_prob *= model[sent[-2]][sent[-1]]
         if not sent[-1]:
@@ -43,7 +43,7 @@ def ngram_gen_sent(model, n=2):
 
 def __main__():
     n = 2
-    bm = make_ngrammodel(nltk.corpus.gutenberg, "bible-kjv.txt", n=n)
+    bm = make_ngrammodel(nltk.corpus.gutenberg, 'shakespeare-macbeth.txt', n=n)
     sent, sent_prob = ngram_gen_sent(bm, n=n)
     print(f"Prob     | %.50f" % sent_prob)
     print(f"Sentence | {' '.join(w for w in sent if w)}")
